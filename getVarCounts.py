@@ -6,6 +6,9 @@ Created on Wed Aug 28 05:57:34 2024
 PJD 28 Aug 2024     - Started
 PJD 28 Aug 2024     - Working version for CMIP3, 5 and 6
 PJD 28 Aug 2024     - Updated to count tables as well
+PJD 28 Aug 2024     - Removed "CMIP6_grids.json"; added tableFiles.sort()
+PJD 28 Aug 2024     - Added datetime for reporting
+PJD 28 Aug 2024     - Added mip-cmor-tables
                     TODO: Determine variables written to CMIP3,
                      5 and 6 ESGF archives
 
@@ -13,6 +16,7 @@ PJD 28 Aug 2024     - Updated to count tables as well
 """
 
 # %% imports
+import datetime
 import glob
 import hashlib
 import json
@@ -145,6 +149,7 @@ def trimReportVar(tableDict, key) -> list:
     varList = [x for x in varKeys if x not in cmipCoords]
     lenVarList = len(varList)
     print("len(varList):", lenVarList)
+    varList.sort()  # add sort before processing
     print("varList:", varList)
 
     return lenVarList
@@ -153,11 +158,13 @@ def trimReportVar(tableDict, key) -> list:
 def reportMipEra(tablePath, mipId) -> None:
     print("Processing:", mipId)
     tableFiles = glob.glob(os.path.join(tablePath))
+    tableFiles.sort()  # add sort before processing
     # catch non-Table files
     nonTable = [
         "CMIP5_grids",  # CMIP5
         "CMIP6_coordinate.json",
         "CMIP6_formula_terms.json",
+        "CMIP6_grids.json",
         "CMIP6_input_example.json",
         "CMIP6_CV.json",
         "md5s",  # CMIP5
@@ -171,7 +178,7 @@ def reportMipEra(tablePath, mipId) -> None:
             continue
         print("table:", trimPath(table))
         tableCount = tableCount + 1
-        if mipId == "CMIP6":
+        if "CMIP6" in mipId:
             aDic = readJsonTable(table)
             key = "variable_entry"
         else:
@@ -193,6 +200,11 @@ def trimPath(filePath):
 
 
 # %% start to iterate over tables
+timeNow = datetime.datetime.now()
+timeFormat = timeNow.strftime("%y%m%d_%H%M%S")
+print("-----")
+print("Process time:", timeFormat)
+print("-----")
 reportMipEra("/Users/durack1/sync/git/cmip3-cmor-tables/Tables/*", "CMIP3")
 print("-----")
 print("-----")
@@ -200,3 +212,6 @@ reportMipEra("/Users/durack1/sync/git/cmip5-cmor-tables/Tables/*", "CMIP5")
 print("-----")
 print("-----")
 reportMipEra("/Users/durack1/sync/git/cmip6-cmor-tables/Tables/*", "CMIP6")
+print("-----")
+print("-----")
+reportMipEra("/Users/durack1/sync/git/mip-cmor-tables/Tables/*", "CMIP6Plus")
