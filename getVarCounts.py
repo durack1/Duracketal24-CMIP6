@@ -5,6 +5,7 @@ Created on Wed Aug 28 05:57:34 2024
 
 PJD 28 Aug 2024     - Started
 PJD 28 Aug 2024     - Working version for CMIP3, 5 and 6
+PJD 28 Aug 2024     - Updated to count tables as well
                     TODO: Determine variables written to CMIP3,
                      5 and 6 ESGF archives
 
@@ -161,7 +162,7 @@ def reportMipEra(tablePath, mipId) -> None:
         "CMIP6_CV.json",
         "md5s",  # CMIP5
     ]
-    varCount = 0
+    varCount, tableCount = [0 for _ in range(2)]
     for table in tableFiles:
         # check for non-Table files
         if table.split("/")[-1] in nonTable:
@@ -169,6 +170,7 @@ def reportMipEra(tablePath, mipId) -> None:
             print("-----")
             continue
         print("table:", trimPath(table))
+        tableCount = tableCount + 1
         if mipId == "CMIP6":
             aDic = readJsonTable(table)
             key = "variable_entry"
@@ -178,7 +180,7 @@ def reportMipEra(tablePath, mipId) -> None:
         cnt = trimReportVar(aDic, key)
         varCount = varCount + cnt
         print("-----")
-    print("total", mipId, "vars:", varCount)
+    print("total", mipId, "tables:", tableCount, "vars:", varCount)
 
 
 def trimPath(filePath):
