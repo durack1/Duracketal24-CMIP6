@@ -4,8 +4,9 @@
 Created on Wed Aug 28 05:57:34 2024
 
 PJD 28 Aug 2024     - Started
-                    TODO: interrogate cmip3, cmip5, cmip6-cmor-table variable counts
-                    TODO: ??
+PJD 28 Aug 2024     - Working version for CMIP3, 5 and 6
+                    TODO: Determine variables written to CMIP3,
+                     5 and 6 ESGF archives
 
 @author: durack1
 """
@@ -153,12 +154,12 @@ def reportMipEra(tablePath, mipId) -> None:
     tableFiles = glob.glob(os.path.join(tablePath))
     # catch non-Table files
     nonTable = [
-        "CMIP5_grids",
+        "CMIP5_grids",  # CMIP5
         "CMIP6_coordinate.json",
         "CMIP6_formula_terms.json",
         "CMIP6_input_example.json",
         "CMIP6_CV.json",
-        "md5s",
+        "md5s",  # CMIP5
     ]
     varCount = 0
     for table in tableFiles:
